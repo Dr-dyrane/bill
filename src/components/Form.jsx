@@ -1,9 +1,11 @@
 // src/components/Form.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineUser, AiOutlineDollarCircle } from "react-icons/ai";
 import { BsCalendar, BsCardChecklist } from "react-icons/bs";
 import Select from "react-select";
+import Invoice from "./Invoice";
+import { saveData, loadData } from "../utils/localStorage";
 
 const options = [
   { value: "pending", label: "Pending" },
@@ -12,19 +14,61 @@ const options = [
 ];
 
 const Form = ({ onSubmit }) => {
-  const { register, handleSubmit, formState } = useForm({
-    mode: "onChange",
-  });
+    const { register, handleSubmit, formState, setValue, watch } = useForm({
+      mode: "onChange",
+    });
+
+  const [invoiceItems, setInvoiceItems] = useState([]);
+  const [loadedData, setLoadedData] = useState(false);
+
+  useEffect(() => {
+    // Load data from local storage when the component mounts
+    const savedData = loadData("invoiceData");
+    if (savedData) {
+      setValue("clientName", savedData.clientName);
+      setValue("amount", savedData.amount);
+      setValue("dueDate", savedData.dueDate);
+      setValue("status", savedData.status);
+      setInvoiceItems(savedData.items || []);
+    }
+    setLoadedData(true);
+  }, [setValue]);
+
+  useEffect(() => {
+    // Save data to local storage whenever it changes
+    if (loadedData) {
+      saveData("invoiceData", {
+        clientName: watch("clientName"),
+        amount: watch("amount"),
+        dueDate: watch("dueDate"),
+        status: watch("status"),
+        items: invoiceItems,
+      });
+    }
+  }, [invoiceItems, watch, loadedData]);
+
+  const handleItemAdd = (item) => {
+    setInvoiceItems([...invoiceItems, item]);
+  };
+
+  const handleItemRemove = (index) => {
+    const updatedItems = [...invoiceItems];
+    updatedItems.splice(index, 1);
+    setInvoiceItems(updatedItems);
+  };
 
   const handleFormSubmit = (data) => {
-    onSubmit(data);
+    onSubmit({ ...data, items: invoiceItems });
   };
 
   return (
     <div className="min-h-screen p-4">
       <form onSubmit={handleSubmit(handleFormSubmit)}>
         <div className="mb-4 mt-20">
-          <label htmlFor="clientName" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="clientName"
+            className="block text-sm font-medium text-gray-700"
+          >
             Client Name
           </label>
           <div className="mt-1">
@@ -44,7 +88,10 @@ const Form = ({ onSubmit }) => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="amount"
+            className="block text-sm font-medium text-gray-700"
+          >
             Amount
           </label>
           <div className="mt-1">
@@ -64,7 +111,10 @@ const Form = ({ onSubmit }) => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="dueDate"
+            className="block text-sm font-medium text-gray-700"
+          >
             Due Date
           </label>
           <div className="mt-1">
@@ -83,7 +133,10 @@ const Form = ({ onSubmit }) => {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="status"
+            className="block text-sm font-medium text-gray-700"
+          >
             Status
           </label>
           <div className="mt-1">
@@ -96,6 +149,21 @@ const Form = ({ onSubmit }) => {
               placeholder="Select Status"
             />
           </div>
+        </div>
+
+        <div className="mb-4">
+          <label
+            htmlFor="status"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Invoice Items
+          </label>
+          {/* Component for adding and displaying invoice items */}
+          <Invoice
+            items={invoiceItems}
+            onItemAdd={handleItemAdd}
+            onItemRemove={handleItemRemove}
+          />
         </div>
 
         <button
