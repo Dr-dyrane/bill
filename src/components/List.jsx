@@ -3,7 +3,7 @@ import React from 'react';
 
 const List = ({ invoices }) => {
   return (
-    <div>
+    <div className='min-h-screen mt-40 p-4'>
       <h2>Invoices</h2>
       <ul>
         {invoices.map((invoice) => (

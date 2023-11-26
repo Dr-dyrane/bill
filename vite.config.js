@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       manifest: {
-        name: "Durane Invoice App - Bill",
+        name: "Dyrane's Invoice App - Bill",
         short_name: "bill",
         description: "A lightweight and beautiful invoicing app.",
         start_url: '/',
