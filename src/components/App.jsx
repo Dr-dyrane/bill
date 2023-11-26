@@ -15,7 +15,7 @@ const App = () => {
 
 	const addInvoice = (invoice) => {
 		// Add a unique identifier to the invoice (e.g., invoice.id)
-		const updatedInvoices = [...invoices, invoice];
+    const updatedInvoices = [...invoices, { ...invoice, id: Date.now().toString() }];
 		saveInvoice(updatedInvoices);
 		setInvoices(updatedInvoices);
 	};
