@@ -18,7 +18,7 @@ const List = () => {
               key={invoice.id || index}
               className="bg-white p-4 rounded-md shadow-md transition transform hover:scale-105"
             >
-              <InvoiceForm items={invoice.items} />
+              {/* <InvoiceForm items={invoice.items} /> */}
             </li>
           ))}
         </ul>
