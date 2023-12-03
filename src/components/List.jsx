@@ -1,8 +1,11 @@
 // src/components/List.jsx
 import React from 'react';
-import Invoice from './Invoice';
+import InvoiceForm from './InvoiceForm';
+import { loadInvoices } from '../utils/invoice';  // Import the loadInvoices function
 
-const List = ({ invoices }) => {
+const List = () => {
+  const invoices = loadInvoices();  // Load invoices from local storage
+
   return (
     <div className="min-h-screen p-4">
       <h2 className="text-3xl font-bold mb-4 mt-20">Invoices</h2>
@@ -15,7 +18,7 @@ const List = ({ invoices }) => {
               key={invoice.id || index}
               className="bg-white p-4 rounded-md shadow-md transition transform hover:scale-105"
             >
-              <Invoice items={invoice.items} />
+              <InvoiceForm items={invoice.items} />
             </li>
           ))}
         </ul>

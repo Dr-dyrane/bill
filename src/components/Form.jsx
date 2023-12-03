@@ -4,8 +4,9 @@ import { useForm } from "react-hook-form";
 import { AiOutlineUser, AiOutlineDollarCircle } from "react-icons/ai";
 import { BsCalendar, BsCardChecklist } from "react-icons/bs";
 import Select from "react-select";
-import Invoice from "./Invoice";
+import InvoiceForm  from "./InvoiceForm";
 import { saveData, loadData } from "../utils/localStorage";
+import { saveInvoice } from '../utils/invoice';
 
 const options = [
   { value: "pending", label: "Pending" },
@@ -14,9 +15,9 @@ const options = [
 ];
 
 const Form = ({ onSubmit }) => {
-    const { register, handleSubmit, formState, setValue, watch } = useForm({
-      mode: "onChange",
-    });
+  const { register, handleSubmit, formState, setValue, watch } = useForm({
+    mode: "onChange",
+  });
 
   const [invoiceItems, setInvoiceItems] = useState([]);
   const [loadedData, setLoadedData] = useState(false);
@@ -59,6 +60,7 @@ const Form = ({ onSubmit }) => {
 
   const handleFormSubmit = (data) => {
     onSubmit({ ...data, items: invoiceItems });
+    saveInvoice({ ...data, items: invoiceItems });
   };
 
   return (
@@ -141,7 +143,7 @@ const Form = ({ onSubmit }) => {
           </label>
           <div className="mt-1">
             <Select
-              id="status"
+              name="status"
               {...register("status", { required: true })}
               options={options}
               className="w-full"
@@ -159,7 +161,7 @@ const Form = ({ onSubmit }) => {
             Invoice Items
           </label>
           {/* Component for adding and displaying invoice items */}
-          <Invoice
+          <InvoiceForm
             items={invoiceItems}
             onItemAdd={handleItemAdd}
             onItemRemove={handleItemRemove}
